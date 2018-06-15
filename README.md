@@ -59,7 +59,7 @@ $ spark-submit --class com.lbattini.spark.terasort.TeraValidate --deploy-mode cl
 
 # Running on Kubernetes execution engine
 
-Replace --master yarn with --master <<k8s master>>
+Replace --master yarn with --master <k8s master>
 and provide below configurations:
 spark.kubernets.container.image
 spark.kubernetes.driver.pod.name
