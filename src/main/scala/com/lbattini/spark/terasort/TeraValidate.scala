@@ -19,14 +19,14 @@ object TeraValidate {
 
     if (args.length < 1) {
       println("usage:")
-      println("DRIVER_MEMORY=[mem] bin/run-example " +
-        "org.apache.spark.examples.terasort.TeraValidate " +
+      println("DRIVER_MEMORY=[mem] " +
+        "terasort.TeraValidate " +
         "[output-directory]")
       println(" ")
       println("example:")
-      println("DRIVER_MEMORY=50g bin/run-example " +
-        "org.apache.spark.examples.terasort.TeraValidate " +
-        "file:///scratch/username/terasort_out ")
+      println("DRIVER_MEMORY=50g " +
+        "terasort.TeraValidate " +
+        "/benchmarks/terasort/tera_output /benchmarks/terasort/tera_validate")
       System.exit(0)
     }
 

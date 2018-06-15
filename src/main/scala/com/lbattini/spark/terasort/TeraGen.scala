@@ -8,12 +8,12 @@ object TeraGen {
 
     if (args.length < 2) {
       println("usage:")
-      println("DRIVER_MEMORY=[mem] bin/run-example terasort.TeraGen " +
+      println("DRIVER_MEMORY=[mem] terasort.TeraGen " +
         "[output-size] [output-directory]")
       println(" ")
       println("example:")
-      println("DRIVER_MEMORY=50g bin/run-example terasort.TeraGen " +
-        "100G file:///scratch/username/terasort_in")
+      println("DRIVER_MEMORY=50g  terasort.TeraGen " +
+        "100G /benchmarks/terasort/terasort_input")
       System.exit(0)
     }
 

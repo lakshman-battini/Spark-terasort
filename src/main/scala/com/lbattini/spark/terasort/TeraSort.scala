@@ -19,12 +19,12 @@ object TeraSort {
 
     if (args.length < 2) {
       println("usage:")
-      println("DRIVER_MEMORY=[mem] bin/run-example terasort.TeraSort " +
+      println("DRIVER_MEMORY=[mem] terasort.TeraSort " +
         "[input-file] [output-file]")
       println(" ")
       println("example:")
-      println("DRIVER_MEMORY=50g bin/run-example terasort.TeraSort " +
-        "/home/myuser/terasort_in /home/myuser/terasort_out")
+      println("DRIVER_MEMORY=50g terasort.TeraSort " +
+        "/benchmarks/terasort/tera_input /benchmarks/terasort/tera_output")
       System.exit(0)
     }
 
