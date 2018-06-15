@@ -1,7 +1,17 @@
 Spark-Terasort
 ==============
 
-Terasort for Spark
+TeraSort is a popular benchmark that measures the amount of time to sort one terabyte of randomly distributed data (or any other amount of data you want) on a given cluster. 
+It is originally written to measure MapReduce performance of an Apache™ Hadoop® cluster. In this project, the code is re-written in Scala to measure the performance of Spark cluster.
+It is a benchmark that combines testing the Storage layer(HDFS) and Computation layers(YARN / Spark) of an Hadoop cluster.
+
+A full TeraSort benchmark run consists of the following three steps:
+
+1. Generating the input data via TeraGen.
+2. Running the actual TeraSort on the input data.
+3. Validating the sorted output data via TeraValidate.
+
+You do not need to re-generate input data before every TeraSort run (step 2). So you can skip step 1 (TeraGen) for later TeraSort runs if you are satisfied with the generated data.
 
 # How to package
 
@@ -9,88 +19,53 @@ Terasort for Spark
 $ sbt assembly
 ```
 
-## Create Idea project
+# Running on YARN execution engine
 
-```
-$ sbt gen-idea
-```
+For each spark job metrics will be printed in the logs, you can redirect the logs to store in file and use it to compare.
+You may provide the additional configurations like spark.executor.memory, spark.driver.memory, spark.executor.instances etc.
 
-For more info, please follow the link: https://github.com/mpeltonen/sbt-idea
-
-# How to run
-
-## TeraGen
+## Step-1: TeraGen
 Usage:
 ```
-$ spark-submit --class com.nexr.spark.terasort.TeraGen --deploy-mode client --master yarn spark-terasort-0.1.jar [output-size] [output-directory]
+$ spark-submit --class com.lbattini.spark.terasort.TeraGen --deploy-mode cluster --master yarn spark-terasort-0.1.jar [output-size] [output-directory]
 ```
 
 Example:
 ```
-$ spark-submit --class com.nexr.spark.terasort.TeraGen --deploy-mode client --master yarn spark-terasort-0.1.jar 1G /user/root/teragen
+$ spark-submit --class com.lbattini.spark.terasort.TeraGen --deploy-mode cluster --master yarn spark-terasort-0.1.jar 1G /benchmarks/terasort/tera_input
 ```
 
-## TeraSort
+## Step-2: TeraSort
 Usage:
 ```
-$ spark-submit --class com.nexr.spark.terasort.TeraSort --deploy-mode client --master yarn spark-terasort-0.1.jar [input-file] [output-file]
+$ spark-submit --class com.lbattini.spark.terasort.TeraSort --deploy-mode cluster --master yarn spark-terasort-0.1.jar [input-directory] [output-directory]
 ```
 
 Example:
 ```
-$ spark-submit --class com.nexr.spark.terasort.TeraSort --deploy-mode client --master yarn spark-terasort-0.1.jar /user/root/teragen /user/root/terasort
+$ spark-submit --class com.lbattini.spark.terasort.TeraSort --deploy-mode cluster --master yarn spark-terasort-0.1.jar /benchmarks/terasort/tera_input /benchmarks/terasort/tera_output
 ```
 
-## TeraValidate
+## Step-3: TeraValidate
 Usage:
 ```
-$ spark-submit --class com.nexr.spark.terasort.TeraValidate --deploy-mode client --master yarn spark-terasort-0.1.jar [input-directory]
+$ spark-submit --class com.lbattini.spark.terasort.TeraValidate --deploy-mode cluster --master yarn spark-terasort-0.1.jar [input-directory]
 ```
 
 Example:
 ```
-$ spark-submit --class com.nexr.spark.terasort.TeraValidate --deploy-mode client --master yarn spark-terasort-0.1.jar /user/root/teragen
+$ spark-submit --class com.lbattini.spark.terasort.TeraValidate --deploy-mode cluster --master yarn spark-terasort-0.1.jar /benchmarks/terasort/tera_output /benchmarks/terasort/tera_validate
 ```
 
-## TPCx-HS Style Benchmark
+# Running on Kubernetes execution engine
 
-* Copy `src/main/resource/*.sh` to work directory.
-* Copy `*.jar` to work directory.
-* Run the benchmark with option
-```
-$ ./run.sh -g 1
-```
-
-* The result will be like this:
-```
-TPCx-HS Performance Metric (HSph@SF) Report
-
-Test Run 2 details: Total Time = 140
-                     Total Size = 1000000000
-                     Scale-Factor = .1000
-
-TPCx-HS Performance Metric (HSph@SF): 2.5773
-
-```
-
-* Spark configurations in `parametar.sh`
-```
-## Spark Parametars
-# Driver Memory
-SPARK_DRIVER_MEMORY=512m
-
-# Executor Memory
-SPARK_EXECUTOR_MEMORY=1g
-
-# DEPLOY_MODE one of 'cluster' or 'client'
-SPARK_DEPLOY_MODE="client"
-
-# Master URL for the cluster. 'spark://localhost:7077', 'yarn-client' or 'yarn-cluster'
-SPARK_MASTER_URL="spark://localhost:7077"
-```
+Replace --master yarn with --master <<k8s master>>
+and provide below configurations:
+spark.kubernets.container.image
+spark.kubernetes.driver.pod.name
 
 # Internals
 
 # Acknowledgements
 
-This codes are from `https://github.com/ehiggs/spark/tree/terasort`, [Ewan Higgs](https://github.com/ehiggs)' terasort example. Thank you for great example.
+This code is built based on `https://github.com/ehiggs/spark/tree/terasort`, [Ewan Higgs](https://github.com/ehiggs)' terasort example. Thank you for great example.
